@@ -55,6 +55,10 @@ commander.command('save-dump <dump>')
     .description('Saves dump back to dashboard')
     .action(saveDump);
 
+commander.command('save-graphs <dump>')
+    .description('Saves graphs dump back to dashboard')
+    .action(saveGraphs);
+
 commander.command('touch <dashboard>')
     .description('Create a new empty dashboard')
     .action(touch);
@@ -78,8 +82,8 @@ function cat(dashboard, callback) {
 
 function cp(source, target, callback) {
     load(source, function(err, dashboard) {
-        dashboard.name = target;
-        save(target, sourceDashboard, callback);
+        dashboard.state.name = target;
+        save(target, dashboard.state, callback);
     });
 }
 
@@ -279,6 +283,29 @@ function saveDump(dump) {
     var dashboard = JSON.parse(contents);
 
     save(dashboard.state.name, dashboard.state);
+}
+
+function saveGraphs(dump) {
+    if (!new RegExp(/.js$/).test(dump)) {
+        dump += '.js';
+    }
+
+    var contents = fs.readFileSync(dump);
+    var dumpedGraphs = JSON.parse(contents);
+
+    load(dumpedGraphs.name, function(err, dashboard) {
+        dashboard.state.graphs.forEach(function(graph) {
+            var title = graph[1].title;
+
+            dumpedGraphs.graphs.forEach(function(dumpedGraph) {
+                if (dumpedGraph.title === title) {
+                    graph[1].target = dumpedGraph.graphs;
+                }
+            });
+        });
+
+        save(dashboard.state.name, dashboard.state);
+    });
 }
 
 function touch(dashboard) {

@@ -11,4 +11,5 @@ graphite-cli is a set of command line tools created to make working with Graphit
 * `mv` - Moves source dashboard to target dashboard
 * `rm` - Deletes dashboard
 * `save-dump` - Saves dump back to dashboard
+* `save-graphs` - Saves graphs dump back to dashboard
 * `touch` - Creates a new, empty dashboard 

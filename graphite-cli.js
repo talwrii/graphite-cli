@@ -71,7 +71,11 @@ commander.parse(process.argv);
 
 function cat(dashboard, callback) {
     load(dashboard, function(err, dashboard) {
-        console.log(JSON.stringify(dashboard));
+        if (err) {
+            console.log('Error: ' + err.message);
+        } else {
+            console.log(JSON.stringify(dashboard));
+        }
     });
 }
 
@@ -147,17 +151,21 @@ function load(dashboard, callback) {
 
     request.get(options, function(err, resp, body) {
         if (err) {
-            console.log('ERROR: ' + err.message);
-            return;
-        } else {
-            if (resp.statusCode === 200) {
-            } else {
-                console.log('Not deleted ;(');
+            if (callback && typeof callback === 'function') {
+                callback(err);
             }
-        }
+        } else {
+            var data = JSON.parse(body);
 
-        if (callback && typeof callback === 'function') {
-            callback(err, JSON.parse(body));
+            if (data.error) {
+                if (callback && typeof callback === 'function') {
+                    callback(new Error(data.error));
+                }
+            } else {
+                if (callback && typeof callback === 'function') {
+                    callback(null, data);
+                }
+            }
         }
     });
 }

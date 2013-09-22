@@ -7,6 +7,10 @@ var request  = require('request');
 var util = require('util');
 
 var GRAPHITE_URL = process.env.GRAPHITE_CLI_URL; 
+var DELETE_URL = GRAPHITE_URL + '/dashboard/delete/';
+var FIND_URL = GRAPHITE_URL + '/dashboard/find/';
+var LOAD_URL = GRAPHITE_URL + '/dashboard/load';
+var SAVE_URL = GRAPHITE_URL + '/dashboard/save';
 
 if (!GRAPHITE_URL) {
     console.log('Error: GRAPHITE_CLI_URL is not set');
@@ -21,6 +25,7 @@ commander.command('cat <dashboard>')
 
 commander.command('cp <source> <target>')
     .description('Copy source dashboard to target dashboard')
+    .option('-f, --force', 'Forces an override for existing target')
     .action(cp);
 
 commander.command('diff <source> <target>')
@@ -79,10 +84,14 @@ function cat(dashboard, callback) {
     });
 }
 
-function cp(source, target, callback) {
+function cp(source, target, force, callback) {
     load(source, function(err, dashboard) {
-        dashboard.state.name = target;
-        save(target, dashboard.state, callback);
+        if (err) {
+            console.log('Error: ' + err.message);
+        } else {
+            dashboard.state.name = target;
+            save(target, dashboard.state, callback);
+        }
     });
 }
 
@@ -146,7 +155,7 @@ function getGraphs(dashboard, callback) {
 
 function load(dashboard, callback) {
     var options = {
-        url: GRAPHITE_URL + '/dashboard/load/' + dashboard
+        url: LOAD_URL + '/' + dashboard
     };
 
     request.get(options, function(err, resp, body) {
@@ -173,7 +182,7 @@ function load(dashboard, callback) {
 function ls(search) {
     var options = {
         qs: { query: search },
-        url: GRAPHITE_URL + '/dashboard/find/'
+        url: FIND_URL
     };
 
     request.post(options, function(err, resp, body) {
@@ -224,14 +233,14 @@ function lsTargets(dashboard) {
 }
 
 function mv(source, target) {
-    cp(source, target, function() {
+    cp(source, target, false, function() {
         rm(source);
     });
 }
 
 function rm(dashboard) {
     var options = {
-        url: GRAPHITE_URL + '/dashboard/delete/' + dashboard
+        url: DELETE_URL + '/' + dashboard
     };
 
     request.get(options, function(err, resp, body) {
@@ -250,20 +259,23 @@ function rm(dashboard) {
 function save(dashboard, state, callback) {
     var options = {
         form: { state: JSON.stringify(state) },
-        url: GRAPHITE_URL + '/dashboard/save/' + dashboard
+        url: SAVE_URL + '/' + dashboard
     };
 
     request.post(options, function(err, resp, body) {
         if (err) {
-            console.log('ERROR: ' + err.message);
-            return;
+            if (callback && typeof callback === 'function') {
+                callback(err);
+            }
         } else {
-            if (resp.statusCode === 200) {
-                if (callback && typeof callback === 'function') {
+            var data = JSON.parse(body);
+
+            if (callback && typeof callback === 'function') {
+                if (data.success) {
                     callback();
+                } else {
+                    callback(new Error('Unknown'));
                 }
-            } else {
-                console.log('Not created: ' + body);
             }
         }
     });

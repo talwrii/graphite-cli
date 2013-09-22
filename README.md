@@ -4,7 +4,8 @@ graphite-cli is a set of command line tools created to make working with Graphit
 * `cp` - Copies source dashboard to target dashboard
 * `diff` - Lists the differences in graphs between source and target dashboards
 * `ls` - Lists dashboards
-* `ls-graphs` - List graphs in dashboard
+* `ls-graphs` - Lists graphs in dashboard
+* `ls-targets` - Lists all targets in all graphs in a dashboard
 * `mv` - Moves source dashboard to target dashboard
 * `rm` - Deletes dashboard
 * `touch` - Creates a new, empty dashboard 

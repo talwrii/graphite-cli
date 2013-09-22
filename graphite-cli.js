@@ -23,12 +23,16 @@ commander.command('diff <source> <target>')
     .action(diff);
 
 commander.command('ls [search]')
-    .description('List dashboards')
+    .description('Lists dashboards')
     .action(ls);
 
 commander.command('ls-graphs <dashboard>')
-    .description('List graphs in a dashboard')
+    .description('Lists graphs in a dashboard')
     .action(lsGraphs);
+
+commander.command('ls-targets <dashboard>')
+    .description('Lists all targets in all graphs in a dashboard')
+    .action(lsTargets);
 
 commander.command('mv <source> <target>')
     .description('Move source dashboard to target dashboard')
@@ -157,6 +161,26 @@ function lsGraphs(dashboard) {
         if (!err) {
             graphs.sort().forEach(function(graph) {
                 console.log(graph);
+            });
+        }
+    });
+}
+
+function lsTargets(dashboard) {
+    load(dashboard, function(err, resp, body) {
+        if (err) {
+            callback(err);
+        } else {
+            var dashboard = JSON.parse(body);
+            var targets = _.chain(dashboard.state.graphs)
+                .map(function(graph) { return graph[1]; })
+                .pluck('target')
+                .flatten()
+                .uniq()
+                .value();
+
+            targets.sort().forEach(function(target) {
+                console.log(target);
             });
         }
     });

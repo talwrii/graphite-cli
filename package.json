@@ -1,0 +1,20 @@
+{
+    "private": true,
+    "contributors": [
+        "jeff.wolski@gmail.com"
+    ],
+    "name": "graphite-cli",
+    "version": "0.1.0",
+    "description": "CLI tools for Graphite",
+    "homepage": "https://github.com/jwolski/graphite-cli",
+    "bugs": "https://github.com/jwolski/graphite-cli/issues",
+    "repository": {
+        "type": "git",
+        "url": "git://git@github.com:jwolski/graphite-cli.git"
+    },
+    "main": "./graphite.cli.js",
+    "dependencies": {
+        "request": "*",
+        "underscore": "*"
+    }
+}

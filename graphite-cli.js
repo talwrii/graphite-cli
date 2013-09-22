@@ -86,7 +86,6 @@ function rm(dashboard) {
             return;
         } else {
             if (resp.statusCode === 200) {
-                console.log('Deleted!');
             } else {
                 console.log('Not deleted ;(');
             }
@@ -138,7 +137,6 @@ function touch(dashboard) {
             return;
         } else {
             if (resp.statusCode === 200) {
-                console.log('Created!');
             } else {
                 console.log('Not created: ' + body);
             }

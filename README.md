@@ -4,7 +4,7 @@ graphite-cli is a set of command line tools created to make working with Graphit
 * `cp` - Copies source dashboard to target dashboard
 * `diff` - Lists the differences in graphs between source and target dashboards
 * `dump` - Dumps pretty printed dashboard to file of same name
-* `dump-graphs` - Dumps pretty printed graphs to file of same name
+* `dump-graphs` - Dumps pretty printed graphs in custom format to file of same name
 * `ls` - Lists dashboards
 * `ls-graphs` - Lists graphs in dashboard
 * `ls-targets` - Lists all targets in all graphs in a dashboard

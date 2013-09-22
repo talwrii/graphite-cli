@@ -28,7 +28,7 @@ commander.command('dump <dashboard>')
     .action(dump);
 
 commander.command('dump-graphs <dashboard>')
-    .description('Dumps custom formatted graphs to file of the same name')
+    .description('Dumps pretty printed graphs in custom format to file of same name')
     .action(dumpGraphs);
 
 commander.command('ls [search]')

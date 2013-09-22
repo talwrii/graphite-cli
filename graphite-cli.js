@@ -105,7 +105,7 @@ function diff(source, target) {
 
 function dump(name) {
     load(name, function(err, dashboard) {
-        fs.writeFileSync(name + '.js', JSON.stringify(dashboard, null, 4));
+        fs.writeFileSync(name + '.json', JSON.stringify(dashboard, null, 4));
     });
 }
 
@@ -126,7 +126,7 @@ function dumpGraphs(name) {
             });
         });
 
-        fs.writeFileSync(name + '.js', JSON.stringify(customDashboard, null, 4)); 
+        fs.writeFileSync(name + '.json', JSON.stringify(customDashboard, null, 4)); 
     });
 }
 

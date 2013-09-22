@@ -42,7 +42,7 @@ graphite-cli diff <source-dashboard-name> <target-dashboard-name>
 
 ### dump
 
-Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows the same structure returned from Graphite. A `.js` file extension is added onto the file if one is not provided.
+Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows the same structure returned from Graphite. A `.json` file extension is added onto the file if one is not provided.
 
 ```bash
 graphite-cli dump <dashboard-name>
@@ -50,7 +50,7 @@ graphite-cli dump <dashboard-name>
 
 ### dump-graphs
 
-Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows a custom object structure to make graphs and associated targets/stats more readable and easy to edit. See `save-graphs` for the complement command. A `.js` file extension is added onto the file if one is not provided.
+Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows a custom object structure to make graphs and associated targets/stats more readable and easy to edit. See `save-graphs` for the complement command. A `.json` file extension is added onto the file if one is not provided.
 
 ```bash
 graphite-cli dump-graphs <dashboard-name>

@@ -18,9 +18,9 @@ commander.command('cp <source> <target>')
     .description('Copy source dashboard to target dashboard')
     .action(cp);
 
-commander.command('diff-dash <source> <target>')
+commander.command('diff <source> <target>')
     .description('Lists the difference in graphs between source and target dashboards')
-    .action(diffDash);
+    .action(diff);
 
 commander.command('load <dashboard>')
     .description('Alias for `cat`')
@@ -74,7 +74,7 @@ function cp(source, target, callback) {
     });
 }
 
-function diffDash(source, target) {
+function diff(source, target) {
     getGraphs(source, function(err, sourceGraphs) {
         if (!err) {
             getGraphs(target, function(err, targetGraphs) {

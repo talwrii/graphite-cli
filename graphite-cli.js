@@ -18,6 +18,10 @@ commander.command('cp <source> <target>')
     .description('Copy source dashboard to target dashboard')
     .action(cp);
 
+commander.command('diff-dash <source> <target>')
+    .description('Lists the difference in graphs between source and target dashboards')
+    .action(diffDash);
+
 commander.command('load <dashboard>')
     .description('Alias for `cat`')
     .action(cat);
@@ -60,9 +64,44 @@ function cat(dashboard, callback) {
 }
 
 function cp(source, target, callback) {
-    cat(source, function(err, resp, body) {
+    load(source, function(err, resp, body) {
         if (resp.statusCode === 200) {
-            save(target, JSON.parse(body).state, callback);
+            var sourceDashboard = JSON.parse(body).state;
+            sourceDashboard.name = target;
+
+            save(target, sourceDashboard, callback);
+        }
+    });
+}
+
+function diffDash(source, target) {
+    getGraphs(source, function(err, sourceGraphs) {
+        if (!err) {
+            getGraphs(target, function(err, targetGraphs) {
+                if (!err) {
+                    var graphs = _.difference(sourceGraphs, targetGraphs);
+
+                    graphs.sort().forEach(function(graph) {
+                        console.log(graph);
+                    });
+                }
+            });
+        }
+    });
+}
+
+function getGraphs(dashboard, callback) {
+    load(dashboard, function(err, resp, body) {
+        if (err) {
+            callback(err);
+        } else {
+            var dashboard = JSON.parse(body);
+            var graphs = _.chain(dashboard.state.graphs)
+                .map(function(graph) { return graph[1]; })
+                .pluck('title')
+                .value();
+
+            callback(null, graphs);
         }
     });
 }
@@ -118,17 +157,12 @@ function ls(search) {
 }
 
 function lsGraphs(dashboard) {
-    load(dashboard, function(err, resp, body) {
-        var dashboard = JSON.parse(body);
-        var graphs = _.chain(dashboard.state.graphs)
-            .map(function(graph) { return graph[1]; })
-            .pluck('title')
-            .value()
-            .sort();
-
-        graphs.forEach(function(graph) {
-            console.log(graph);
-        });
+    getGraphs(dashboard, function(err, graphs) {
+        if (!err) {
+            graphs.sort().forEach(function(graph) {
+                console.log(graph);
+            });
+        }
     });
 }
 

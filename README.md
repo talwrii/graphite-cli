@@ -16,6 +16,8 @@ graphite-cli is a set of command line tools created to make working with Graphit
 
 ## Usage
 
+graphite-cli uses the `GRAPHITE_CLI_URL` environment variable as the basis for all commands that require requests to be made against the Graphite web server. This must be set in your environment before execution.
+
 ### cat
 
 Dumps raw dashboard definition to stdout

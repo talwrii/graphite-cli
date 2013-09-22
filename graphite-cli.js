@@ -275,8 +275,8 @@ function save(dashboard, state, callback) {
 }
 
 function saveDump(dump) {
-    if (!new RegExp(/.js$/).test(dump)) {
-        dump += '.js';
+    if (!new RegExp(/.json$/).test(dump)) {
+        dump += '.json';
     }
 
     var contents = fs.readFileSync(dump);
@@ -286,8 +286,8 @@ function saveDump(dump) {
 }
 
 function saveGraphs(dump) {
-    if (!new RegExp(/.js$/).test(dump)) {
-        dump += '.js';
+    if (!new RegExp(/.json$/).test(dump)) {
+        dump += '.json';
     }
 
     var contents = fs.readFileSync(dump);

@@ -27,6 +27,10 @@ commander.command('dump <dashboard>')
     .description('Dumps dashboard JSON to a file of the same name')
     .action(dump);
 
+commander.command('dump-graphs <dashboard>')
+    .description('Dumps custom formatted graphs to file of the same name')
+    .action(dumpGraphs);
+
 commander.command('ls [search]')
     .description('Lists dashboards')
     .action(ls);
@@ -98,6 +102,27 @@ function diff(source, target) {
 function dump(name) {
     load(name, function(err, dashboard) {
         fs.writeFileSync(name + '.js', JSON.stringify(dashboard, null, 4));
+    });
+}
+
+function dumpGraphs(name) {
+    load(name, function(err, dashboard) {
+        var customDashboard = {
+            name: dashboard.state.name,
+            graphs: []
+        };
+
+        dashboard.state.graphs.forEach(function(graph) {
+            var title = graph[1].title;
+            var target = graph[1].target;
+
+            customDashboard.graphs.push({
+                title: title,
+                graphs: target
+            });
+        });
+
+        fs.writeFileSync(name + '.js', JSON.stringify(customDashboard, null, 4)); 
     });
 }
 

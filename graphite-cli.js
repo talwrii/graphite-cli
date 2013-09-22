@@ -47,6 +47,10 @@ commander.command('rm <dashboard>')
     .description('Delete a dashboard')
     .action(rm);
 
+commander.command('save-dump <dump>')
+    .description('Saves dump back to dashboard')
+    .action(saveDump);
+
 commander.command('touch <dashboard>')
     .description('Create a new empty dashboard')
     .action(touch);
@@ -239,6 +243,17 @@ function save(dashboard, state, callback) {
             }
         }
     });
+}
+
+function saveDump(dump) {
+    if (!new RegExp(/.js$/).test(dump)) {
+        dump += '.js';
+    }
+
+    var contents = fs.readFileSync(dump);
+    var dashboard = JSON.parse(contents);
+
+    save(dashboard.state.name, dashboard.state);
 }
 
 function touch(dashboard) {

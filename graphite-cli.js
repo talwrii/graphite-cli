@@ -122,7 +122,7 @@ function dumpGraphs(name) {
 
             customDashboard.graphs.push({
                 title: title,
-                graphs: target
+                stats: target
             });
         });
 
@@ -299,7 +299,7 @@ function saveGraphs(dump) {
 
             dumpedGraphs.graphs.forEach(function(dumpedGraph) {
                 if (dumpedGraph.title === title) {
-                    graph[1].target = dumpedGraph.graphs;
+                    graph[1].target = dumpedGraph.stats;
                 }
             });
         });

@@ -26,6 +26,10 @@ commander.command('ls [search]')
     .description('List dashboards')
     .action(ls);
 
+commander.command('ls-graphs <dashboard>')
+    .description('List graphs in a dashboard')
+    .action(lsGraphs);
+
 commander.command('mv <source> <target>')
     .description('Move source dashboard to target dashboard')
     .action(mv);
@@ -50,6 +54,22 @@ function init() {
 function cat(dashboard, callback) {
     init();
 
+    load(dashboard, function(err, resp, body) {
+        console.log(body);
+    });
+}
+
+function cp(source, target, callback) {
+    cat(source, function(err, resp, body) {
+        if (resp.statusCode === 200) {
+            save(target, JSON.parse(body).state, callback);
+        }
+    });
+}
+
+function load(dashboard, callback) {
+    init();
+
     var options = {
         url: graphiteUrl + '/dashboard/load/' + dashboard
     };
@@ -60,7 +80,6 @@ function cat(dashboard, callback) {
             return;
         } else {
             if (resp.statusCode === 200) {
-                console.log(body);
             } else {
                 console.log('Not deleted ;(');
             }
@@ -68,14 +87,6 @@ function cat(dashboard, callback) {
 
         if (callback && typeof callback === 'function') {
             callback(err, resp, body);
-        }
-    });
-}
-
-function cp(source, target, callback) {
-    cat(source, function(err, resp, body) {
-        if (resp.statusCode === 200) {
-            save(target, JSON.parse(body).state, callback);
         }
     });
 }
@@ -102,6 +113,21 @@ function ls(search) {
 
         dashboards.forEach(function(dashboard) {
             console.log(dashboard);
+        });
+    });
+}
+
+function lsGraphs(dashboard) {
+    load(dashboard, function(err, resp, body) {
+        var dashboard = JSON.parse(body);
+        var graphs = _.chain(dashboard.state.graphs)
+            .map(function(graph) { return graph[1]; })
+            .pluck('title')
+            .value()
+            .sort();
+
+        graphs.forEach(function(graph) {
+            console.log(graph);
         });
     });
 }

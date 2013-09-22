@@ -55,3 +55,85 @@ Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and foll
 ```bash
 graphite-cli dump-graphs <dashboard-name>
 ```
+
+The custom object structure is as follows:
+
+```javascript
+{
+    "name": "DASHBOARD_NAME"
+    "graphs": [
+        {
+            "title": "GRAPH_TITLE"
+            "stats": [
+                "FIRST_TARGET",
+                "SECOND_TARGET",
+                "etc"
+            ] 
+        }
+    ]
+}
+```
+
+### ls
+
+Lists dashboards
+
+```bash
+graphite-cli ls
+```
+
+### ls-graphs
+
+Lists graphs in a dashboard in alphabetical order.
+
+```bash
+graphite-cli ls-graphs <dashboard-name>
+```
+
+### ls-targets
+
+Lists targets in all graphs of a dashboard in alphabetical order
+
+```bash
+graphite-cli ls-targets <dashboard-name>
+```
+
+### mv
+
+Moves a dashboard from source to target
+
+```bash
+graphite-cli mv <source-dashboard-name> <target-dashboard-name>
+```
+
+### rm
+
+Removes a dashboard
+
+```bash
+graphite-cli rm <dashboard-name>
+```
+
+### save-dump
+
+Saves a dashboard dump (see `dump`) back to the dashboard of the same name. This is a destructive override. Be careful. The dashboard dump file extension is optional.
+
+```bash
+graphite-cli save-dump <dashboard-dump-filename>
+```
+
+### save-graphs
+
+Saves a graph dump (see `dump-graphs`) back to the dashboard of the same name. This is a destructive override. Be careful. The graph dump file extension is optional.
+
+```bash
+graphite-cli save-graphs <graphs-dump-filename>
+```
+
+### touch
+
+Creates a new, blank dashboard with the specified name.
+
+```bash
+graphite-cli touch <dashboard-name>
+```

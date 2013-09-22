@@ -2,6 +2,7 @@
 
 var _ = require('underscore');
 var commander = require('commander');
+var fs = require('fs');
 var request  = require('request');
 var util = require('util');
 
@@ -21,6 +22,10 @@ commander.command('cp <source> <target>')
 commander.command('diff <source> <target>')
     .description('Lists the difference in graphs between source and target dashboards')
     .action(diff);
+
+commander.command('dump <dashboard>')
+    .description('Dumps dashboard JSON to a file of the same name')
+    .action(dump);
 
 commander.command('ls [search]')
     .description('Lists dashboards')
@@ -58,19 +63,15 @@ function init() {
 function cat(dashboard, callback) {
     init();
 
-    load(dashboard, function(err, resp, body) {
-        console.log(body);
+    load(dashboard, function(err, dashboard) {
+        console.log(JSON.stringify(dashboard));
     });
 }
 
 function cp(source, target, callback) {
-    load(source, function(err, resp, body) {
-        if (resp.statusCode === 200) {
-            var sourceDashboard = JSON.parse(body).state;
-            sourceDashboard.name = target;
-
-            save(target, sourceDashboard, callback);
-        }
+    load(source, function(err, dashboard) {
+        dashboard.name = target;
+        save(target, sourceDashboard, callback);
     });
 }
 
@@ -90,12 +91,17 @@ function diff(source, target) {
     });
 }
 
+function dump(name) {
+    load(name, function(err, dashboard) {
+        fs.writeFileSync(name + '.js', JSON.stringify(dashboard, null, 4));
+    });
+}
+
 function getGraphs(dashboard, callback) {
-    load(dashboard, function(err, resp, body) {
+    load(dashboard, function(err, dashboard) {
         if (err) {
             callback(err);
         } else {
-            var dashboard = JSON.parse(body);
             var graphs = _.chain(dashboard.state.graphs)
                 .map(function(graph) { return graph[1]; })
                 .pluck('title')
@@ -125,7 +131,7 @@ function load(dashboard, callback) {
         }
 
         if (callback && typeof callback === 'function') {
-            callback(err, resp, body);
+            callback(err, JSON.parse(body));
         }
     });
 }
@@ -167,11 +173,10 @@ function lsGraphs(dashboard) {
 }
 
 function lsTargets(dashboard) {
-    load(dashboard, function(err, resp, body) {
+    load(dashboard, function(err, dashboard) {
         if (err) {
             callback(err);
         } else {
-            var dashboard = JSON.parse(body);
             var targets = _.chain(dashboard.state.graphs)
                 .map(function(graph) { return graph[1]; })
                 .pluck('target')

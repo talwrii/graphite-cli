@@ -6,10 +6,14 @@ var fs = require('fs');
 var request  = require('request');
 var util = require('util');
 
-var graphiteUrl;
+var GRAPHITE_URL = process.env.GRAPHITE_CLI_URL; 
 
-commander.version('0.0.1')
-    .option('-c, --conf <conf>', 'Configuration file', null, './graphite-config.js');
+if (!GRAPHITE_URL) {
+    console.log('Error: GRAPHITE_CLI_URL is not set');
+    process.exit(1);
+}
+
+commander.version('0.1.0');
 
 commander.command('cat <dashboard>')
     .description('Dumps raw dashboard definition')
@@ -65,16 +69,7 @@ commander.command('touch <dashboard>')
 
 commander.parse(process.argv);
 
-function init() {
-    var conf = commander.conf && require(commander.conf);
-    var hostname = conf && conf.hostname || 'localhost';
-    var port = conf && conf.port || 8000;
-    graphiteUrl = util.format('http://%s:%d', hostname, port);
-}
-
 function cat(dashboard, callback) {
-    init();
-
     load(dashboard, function(err, dashboard) {
         console.log(JSON.stringify(dashboard));
     });
@@ -146,10 +141,8 @@ function getGraphs(dashboard, callback) {
 }
 
 function load(dashboard, callback) {
-    init();
-
     var options = {
-        url: graphiteUrl + '/dashboard/load/' + dashboard
+        url: GRAPHITE_URL + '/dashboard/load/' + dashboard
     };
 
     request.get(options, function(err, resp, body) {
@@ -170,11 +163,9 @@ function load(dashboard, callback) {
 }
 
 function ls(search) {
-    init();
-
     var options = {
         qs: { query: search },
-        url: graphiteUrl + '/dashboard/find/'
+        url: GRAPHITE_URL + '/dashboard/find/'
     };
 
     request.post(options, function(err, resp, body) {
@@ -231,10 +222,8 @@ function mv(source, target) {
 }
 
 function rm(dashboard) {
-    init();
-
     var options = {
-        url: graphiteUrl + '/dashboard/delete/' + dashboard
+        url: GRAPHITE_URL + '/dashboard/delete/' + dashboard
     };
 
     request.get(options, function(err, resp, body) {
@@ -251,11 +240,9 @@ function rm(dashboard) {
 }
 
 function save(dashboard, state, callback) {
-    init();
-
     var options = {
         form: { state: JSON.stringify(state) },
-        url: graphiteUrl + '/dashboard/save/' + dashboard
+        url: GRAPHITE_URL + '/dashboard/save/' + dashboard
     };
 
     request.post(options, function(err, resp, body) {

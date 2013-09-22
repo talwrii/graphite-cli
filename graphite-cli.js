@@ -22,10 +22,6 @@ commander.command('diff <source> <target>')
     .description('Lists the difference in graphs between source and target dashboards')
     .action(diff);
 
-commander.command('load <dashboard>')
-    .description('Alias for `cat`')
-    .action(cat);
-
 commander.command('ls [search]')
     .description('List dashboards')
     .action(ls);

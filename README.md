@@ -78,10 +78,10 @@ The custom object structure is as follows:
 
 ### ls
 
-Lists dashboards
+Lists dashboards with an optional search string
 
 ```bash
-graphite-cli ls
+graphite-cli ls [search]
 ```
 
 ### ls-graphs

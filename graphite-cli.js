@@ -2,23 +2,8 @@
 
 global.GRAPHITE_URL = process.env.GRAPHITE_CLI_URL;
 
-// stdlib
-var fs = require('fs');
-var util = require('util');
-
-// 3rd party
-var _ = require('underscore');
 var commander = require('commander');
-var request  = require('request');
-
-// 1st party
 var commands = require('./lib/commands');
-var helpers = require('./lib/helpers');
-var getGraphs = helpers.getGraphs;
-var load = helpers.load;
-var save = helpers.save;
-
-var DELETE_URL = GRAPHITE_URL + '/dashboard/delete/';
 
 if (!GRAPHITE_URL) {
     console.log('Error: GRAPHITE_CLI_URL is not set');
@@ -54,149 +39,30 @@ commander.command('ls [search]')
 
 commander.command('ls-graphs <dashboard>')
     .description('Lists graphs in a dashboard')
-    .action(lsGraphs);
+    .action(commands.lsGraphs);
 
 commander.command('ls-targets <dashboard>')
     .description('Lists all targets in all graphs in a dashboard')
-    .action(lsTargets);
+    .action(commands.lsTargets);
 
 commander.command('mv <source> <target>')
     .description('Move source dashboard to target dashboard')
-    .action(mv);
+    .action(commands.mv);
 
 commander.command('rm <dashboard>')
     .description('Delete a dashboard')
-    .action(rm);
+    .action(commands.rm);
 
 commander.command('save-dump <dump>')
     .description('Saves dump back to dashboard')
-    .action(saveDump);
+    .action(commands.saveDump);
 
 commander.command('save-graphs <dump>')
     .description('Saves graphs dump back to dashboard')
-    .action(saveGraphs);
+    .action(commands.saveGraphs);
 
 commander.command('touch <dashboard>')
     .description('Create a new empty dashboard')
-    .action(touch);
+    .action(commands.touch);
 
 commander.parse(process.argv);
-
-function lsGraphs(dashboard) {
-    getGraphs(dashboard, function(err, graphs) {
-        if (!err) {
-            graphs.sort().forEach(function(graph) {
-                console.log(graph);
-            });
-        }
-    });
-}
-
-function lsTargets(dashboard) {
-    load(dashboard, function(err, dashboard) {
-        if (err) {
-            callback(err);
-        } else {
-            var targets = _.chain(dashboard.state.graphs)
-                .map(function(graph) { return graph[1]; })
-                .pluck('target')
-                .flatten()
-                .uniq()
-                .value();
-
-            targets.sort().forEach(function(target) {
-                console.log(target);
-            });
-        }
-    });
-}
-
-function mv(source, target) {
-    cp(source, target, false, function() {
-        rm(source);
-    });
-}
-
-function rm(dashboard) {
-    var options = {
-        url: DELETE_URL + '/' + dashboard
-    };
-
-    request.get(options, function(err, resp, body) {
-        if (err) {
-            console.log('ERROR: ' + err.message);
-            return;
-        } else {
-            if (resp.statusCode === 200) {
-            } else {
-                console.log('Not deleted ;(');
-            }
-        }
-    });
-}
-
-function saveDump(dump) {
-    if (!new RegExp(/.json$/).test(dump)) {
-        dump += '.json';
-    }
-
-    var contents = fs.readFileSync(dump);
-    var dashboard = JSON.parse(contents);
-
-    save(dashboard.state.name, dashboard.state);
-}
-
-function saveGraphs(dump) {
-    if (!new RegExp(/.json$/).test(dump)) {
-        dump += '.json';
-    }
-
-    var contents = fs.readFileSync(dump);
-    var dumpedGraphs = JSON.parse(contents);
-
-    load(dumpedGraphs.name, function(err, dashboard) {
-        dashboard.state.graphs.forEach(function(graph) {
-            var title = graph[1].title;
-
-            dumpedGraphs.graphs.forEach(function(dumpedGraph) {
-                if (dumpedGraph.title === title) {
-                    graph[1].target = dumpedGraph.stats;
-                }
-            });
-        });
-
-        save(dashboard.state.name, dashboard.state);
-    });
-}
-
-function touch(dashboard) {
-    save(dashboard, {
-            name: dashboard,
-            defaultGraphParams: {
-                from: '-2weeks',
-                until: '-',
-                height: '300',
-                width: '400'
-            },
-            graphSize: {
-                height: 250,
-                width: 400
-            },
-            graphs: [],
-            refreshConfig: {
-                enabled: false,
-                interval: 60000
-            },
-            timeConfig: {
-                type: 'relative',
-                relativeStartQuantity: '2',
-                relativeStartUnits: 'weeks',
-                relativeUntilQuantity: '',
-                relativeUntilUnits: 'now',
-                startDate: '2013-09-21T19:03:12',
-                startTime: '9:00AM',
-                endDate: '2013-09-21T19:03:12',
-                endTime: '5:00PM'
-            }
-    });
-}

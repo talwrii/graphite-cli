@@ -47,7 +47,7 @@ commander.command('dump <dashboard>')
 
 commander.command('dump-graphs <dashboard>')
     .description('Dumps pretty printed graphs in custom format to file of same name')
-    .action(dumpGraphs);
+    .action(commands.dumpGraphs);
 
 commander.command('ls [search]')
     .description('Lists dashboards')
@@ -82,27 +82,6 @@ commander.command('touch <dashboard>')
     .action(touch);
 
 commander.parse(process.argv);
-
-function dumpGraphs(name) {
-    load(name, function(err, dashboard) {
-        var customDashboard = {
-            name: dashboard.state.name,
-            graphs: []
-        };
-
-        dashboard.state.graphs.forEach(function(graph) {
-            var title = graph[1].title;
-            var target = graph[1].target;
-
-            customDashboard.graphs.push({
-                title: title,
-                stats: target
-            });
-        });
-
-        fs.writeFileSync(name + '.json', JSON.stringify(customDashboard, null, 4)); 
-    });
-}
 
 function ls(search) {
     var options = {

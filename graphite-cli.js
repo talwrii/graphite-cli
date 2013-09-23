@@ -1,15 +1,22 @@
 #!/usr/bin/env node
 
-var _ = require('underscore');
-var commander = require('commander');
+global.GRAPHITE_URL = process.env.GRAPHITE_CLI_URL;
+
+// stdlib
 var fs = require('fs');
-var request  = require('request');
 var util = require('util');
 
-var GRAPHITE_URL = process.env.GRAPHITE_CLI_URL; 
+// 3rd party
+var _ = require('underscore');
+var commander = require('commander');
+var request  = require('request');
+
+// 1st party
+var commands = require('./lib/commands');
+var load = commands.load;
+
 var DELETE_URL = GRAPHITE_URL + '/dashboard/delete/';
 var FIND_URL = GRAPHITE_URL + '/dashboard/find/';
-var LOAD_URL = GRAPHITE_URL + '/dashboard/load';
 var SAVE_URL = GRAPHITE_URL + '/dashboard/save';
 
 if (!GRAPHITE_URL) {
@@ -21,7 +28,7 @@ commander.version('0.1.0');
 
 commander.command('cat <dashboard>')
     .description('Dumps raw dashboard definition')
-    .action(cat);
+    .action(commands.cat);
 
 commander.command('cp <source> <target>')
     .description('Copy source dashboard to target dashboard')
@@ -73,16 +80,6 @@ commander.command('touch <dashboard>')
     .action(touch);
 
 commander.parse(process.argv);
-
-function cat(dashboard, callback) {
-    load(dashboard, function(err, dashboard) {
-        if (err) {
-            console.log('Error: ' + err.message);
-        } else {
-            console.log(JSON.stringify(dashboard));
-        }
-    });
-}
 
 function cp(source, target, force, callback) {
     load(source, function(err, dashboard) {
@@ -149,32 +146,6 @@ function getGraphs(dashboard, callback) {
                 .value();
 
             callback(null, graphs);
-        }
-    });
-}
-
-function load(dashboard, callback) {
-    var options = {
-        url: LOAD_URL + '/' + dashboard
-    };
-
-    request.get(options, function(err, resp, body) {
-        if (err) {
-            if (callback && typeof callback === 'function') {
-                callback(err);
-            }
-        } else {
-            var data = JSON.parse(body);
-
-            if (data.error) {
-                if (callback && typeof callback === 'function') {
-                    callback(new Error(data.error));
-                }
-            } else {
-                if (callback && typeof callback === 'function') {
-                    callback(null, data);
-                }
-            }
         }
     });
 }

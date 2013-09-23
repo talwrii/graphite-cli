@@ -13,11 +13,12 @@ var request  = require('request');
 
 // 1st party
 var commands = require('./lib/commands');
-var load = commands.load;
+var helpers = require('./lib/helpers');
+var load = helpers.load;
+var save = helpers.save;
 
 var DELETE_URL = GRAPHITE_URL + '/dashboard/delete/';
 var FIND_URL = GRAPHITE_URL + '/dashboard/find/';
-var SAVE_URL = GRAPHITE_URL + '/dashboard/save';
 
 if (!GRAPHITE_URL) {
     console.log('Error: GRAPHITE_CLI_URL is not set');
@@ -33,7 +34,7 @@ commander.command('cat <dashboard>')
 commander.command('cp <source> <target>')
     .description('Copy source dashboard to target dashboard')
     .option('-f, --force', 'Forces an override for existing target')
-    .action(cp);
+    .action(commands.cp);
 
 commander.command('diff <source> <target>')
     .description('Lists the difference in graphs between source and target dashboards')
@@ -80,17 +81,6 @@ commander.command('touch <dashboard>')
     .action(touch);
 
 commander.parse(process.argv);
-
-function cp(source, target, force, callback) {
-    load(source, function(err, dashboard) {
-        if (err) {
-            console.log('Error: ' + err.message);
-        } else {
-            dashboard.state.name = target;
-            save(target, dashboard.state, callback);
-        }
-    });
-}
 
 function diff(source, target) {
     getGraphs(source, function(err, sourceGraphs) {
@@ -222,31 +212,6 @@ function rm(dashboard) {
             if (resp.statusCode === 200) {
             } else {
                 console.log('Not deleted ;(');
-            }
-        }
-    });
-}
-
-function save(dashboard, state, callback) {
-    var options = {
-        form: { state: JSON.stringify(state) },
-        url: SAVE_URL + '/' + dashboard
-    };
-
-    request.post(options, function(err, resp, body) {
-        if (err) {
-            if (callback && typeof callback === 'function') {
-                callback(err);
-            }
-        } else {
-            var data = JSON.parse(body);
-
-            if (callback && typeof callback === 'function') {
-                if (data.success) {
-                    callback();
-                } else {
-                    callback(new Error('Unknown'));
-                }
             }
         }
     });

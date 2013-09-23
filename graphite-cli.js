@@ -14,6 +14,7 @@ var request  = require('request');
 // 1st party
 var commands = require('./lib/commands');
 var helpers = require('./lib/helpers');
+var getGraphs = helpers.getGraphs;
 var load = helpers.load;
 var save = helpers.save;
 
@@ -38,7 +39,7 @@ commander.command('cp <source> <target>')
 
 commander.command('diff <source> <target>')
     .description('Lists the difference in graphs between source and target dashboards')
-    .action(diff);
+    .action(commands.diff);
 
 commander.command('dump <dashboard>')
     .description('Dumps dashboard JSON to a file of the same name')
@@ -82,22 +83,6 @@ commander.command('touch <dashboard>')
 
 commander.parse(process.argv);
 
-function diff(source, target) {
-    getGraphs(source, function(err, sourceGraphs) {
-        if (!err) {
-            getGraphs(target, function(err, targetGraphs) {
-                if (!err) {
-                    var graphs = _.difference(sourceGraphs, targetGraphs);
-
-                    graphs.sort().forEach(function(graph) {
-                        console.log(graph);
-                    });
-                }
-            });
-        }
-    });
-}
-
 function dump(name) {
     load(name, function(err, dashboard) {
         fs.writeFileSync(name + '.json', JSON.stringify(dashboard, null, 4));
@@ -122,21 +107,6 @@ function dumpGraphs(name) {
         });
 
         fs.writeFileSync(name + '.json', JSON.stringify(customDashboard, null, 4)); 
-    });
-}
-
-function getGraphs(dashboard, callback) {
-    load(dashboard, function(err, dashboard) {
-        if (err) {
-            callback(err);
-        } else {
-            var graphs = _.chain(dashboard.state.graphs)
-                .map(function(graph) { return graph[1]; })
-                .pluck('title')
-                .value();
-
-            callback(null, graphs);
-        }
     });
 }
 

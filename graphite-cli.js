@@ -19,7 +19,6 @@ var load = helpers.load;
 var save = helpers.save;
 
 var DELETE_URL = GRAPHITE_URL + '/dashboard/delete/';
-var FIND_URL = GRAPHITE_URL + '/dashboard/find/';
 
 if (!GRAPHITE_URL) {
     console.log('Error: GRAPHITE_CLI_URL is not set');
@@ -51,7 +50,7 @@ commander.command('dump-graphs <dashboard>')
 
 commander.command('ls [search]')
     .description('Lists dashboards')
-    .action(ls);
+    .action(commands.ls);
 
 commander.command('ls-graphs <dashboard>')
     .description('Lists graphs in a dashboard')
@@ -82,30 +81,6 @@ commander.command('touch <dashboard>')
     .action(touch);
 
 commander.parse(process.argv);
-
-function ls(search) {
-    var options = {
-        qs: { query: search },
-        url: FIND_URL
-    };
-
-    request.post(options, function(err, resp, body) {
-        if (err) {
-            console.log('ERROR: ' + err.message);
-            return;
-        }
-
-        var result = JSON.parse(body);
-        var dashboards = _.chain(result.dashboards)
-            .pluck('name')
-            .value()
-            .sort();
-
-        dashboards.forEach(function(dashboard) {
-            console.log(dashboard);
-        });
-    });
-}
 
 function lsGraphs(dashboard) {
     getGraphs(dashboard, function(err, graphs) {

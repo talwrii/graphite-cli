@@ -43,7 +43,7 @@ commander.command('diff <source> <target>')
 
 commander.command('dump <dashboard>')
     .description('Dumps dashboard JSON to a file of the same name')
-    .action(dump);
+    .action(commands.dump);
 
 commander.command('dump-graphs <dashboard>')
     .description('Dumps pretty printed graphs in custom format to file of same name')
@@ -82,12 +82,6 @@ commander.command('touch <dashboard>')
     .action(touch);
 
 commander.parse(process.argv);
-
-function dump(name) {
-    load(name, function(err, dashboard) {
-        fs.writeFileSync(name + '.json', JSON.stringify(dashboard, null, 4));
-    });
-}
 
 function dumpGraphs(name) {
     load(name, function(err, dashboard) {

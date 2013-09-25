@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
-global.GRAPHITE_URL = process.env.GRAPHITE_CLI_URL;
-
 var commander = require('commander');
 var commands = require('./lib/commands');
 
-if (!GRAPHITE_URL) {
+if (!process.env.GRAPHITE_CLI_URL) {
     console.log('Error: GRAPHITE_CLI_URL is not set');
     process.exit(1);
 }

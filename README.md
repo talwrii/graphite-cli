@@ -9,6 +9,7 @@ graphite-cli is a set of command line tools created to make working with Graphit
 * `ls-graphs` - Lists graphs in dashboard
 * `ls-targets` - Lists all targets in all graphs in a dashboard
 * `mv` - Moves source dashboard to target dashboard
+* `repl` - Interactive dashboards in a node REPL
 * `rm` - Deletes dashboard
 * `save-dump` - Saves dump back to dashboard
 * `save-graphs` - Saves graphs dump back to dashboard

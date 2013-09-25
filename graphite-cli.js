@@ -47,6 +47,10 @@ commander.command('mv <source> <target>')
     .description('Move source dashboard to target dashboard')
     .action(commands.mv);
 
+commander.command('repl')
+    .description('Interactive dashboards')
+    .action(commands.repl);
+
 commander.command('rm <dashboard>')
     .description('Delete a dashboard')
     .action(commands.rm);

@@ -51,7 +51,7 @@ Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and foll
 graphite-cli dump <dashboard-name>
 ```
 
-#### Options
+Options
 
 ```bash
 -p, --path <path> Path to which dashboards are dumped

@@ -1,2 +1,3 @@
 *.swp
 dumps/*
+node_modules/*

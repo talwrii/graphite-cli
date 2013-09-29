@@ -51,6 +51,12 @@ Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and foll
 graphite-cli dump <dashboard-name>
 ```
 
+#### Options
+
+```bash
+-p, --path <path> Path to which dashboards are dumped
+```
+
 ### dump-graphs
 
 Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows a custom object structure to make graphs and associated targets/stats more readable and easy to edit. See `save-graphs` for the complement command. A `.json` file extension is added onto the file if one is not provided.

@@ -25,6 +25,7 @@ commander.command('diff <source> <target>')
 
 commander.command('dump <dashboard>')
     .description('Dumps dashboard JSON to a file of the same name')
+    .option('-p, --path <path>', 'Path to which dashboards are dumped')
     .action(commands.dump);
 
 commander.command('dump-graphs <dashboard>')

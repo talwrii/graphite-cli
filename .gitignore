@@ -1,3 +1,4 @@
 *.swp
 dumps/*
 node_modules/*
+*.swo

@@ -1,4 +1,5 @@
-*.swp
 dumps/*
 node_modules/*
 *.swo
+*.swp
+.graphiterc

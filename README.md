@@ -121,6 +121,7 @@ Starts an interactive dashboard repl. A `client` object is provided in global sc
 
 ```bash
 graphite repl
+graphite> ...
 ```
 
 ### rm

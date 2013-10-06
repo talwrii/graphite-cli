@@ -24,7 +24,7 @@ graphite-cli uses the `GRAPHITE_CLI_URL` environment variable as the basis for a
 Dumps raw dashboard definition to stdout
 
 ```bash
-graphite-cli cat <dashboard-name>
+graphite cat <dashboard-name>
 ```
 
 ### cp
@@ -32,7 +32,7 @@ graphite-cli cat <dashboard-name>
 Copies source dashboard to target dashboard
 
 ```bash
-graphite-cli cp <source-dashboard-name> <target-dashboard-name>
+graphite cp <source-dashboard-name> <target-dashboard-name>
 ```
 
 ### diff
@@ -40,7 +40,7 @@ graphite-cli cp <source-dashboard-name> <target-dashboard-name>
 Lists the differences in graphs between the source and target dashboards
 
 ```bash
-graphite-cli diff <source-dashboard-name> <target-dashboard-name>
+graphite diff <source-dashboard-name> <target-dashboard-name>
 ```
 
 ### dump
@@ -48,7 +48,7 @@ graphite-cli diff <source-dashboard-name> <target-dashboard-name>
 Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows the same structure returned from Graphite. A `.json` file extension is added onto the file if one is not provided.
 
 ```bash
-graphite-cli dump <dashboard-name>
+graphite dump <dashboard-name>
 ```
 
 Options
@@ -62,7 +62,7 @@ Options
 Dumps dashboard JSON to a file of the same name. JSON is pretty-printed and follows a custom object structure to make graphs and associated targets/stats more readable and easy to edit. See `save-graphs` for the complement command. A `.json` file extension is added onto the file if one is not provided.
 
 ```bash
-graphite-cli dump-graphs <dashboard-name>
+graphite dump-graphs <dashboard-name>
 ```
 
 The custom object structure is as follows:
@@ -88,7 +88,7 @@ The custom object structure is as follows:
 Lists dashboards with an optional search string
 
 ```bash
-graphite-cli ls [search]
+graphite ls [search]
 ```
 
 ### ls-graphs
@@ -96,7 +96,7 @@ graphite-cli ls [search]
 Lists graphs in a dashboard in alphabetical order.
 
 ```bash
-graphite-cli ls-graphs <dashboard-name>
+graphite ls-graphs <dashboard-name>
 ```
 
 ### ls-targets
@@ -104,7 +104,7 @@ graphite-cli ls-graphs <dashboard-name>
 Lists targets in all graphs of a dashboard in alphabetical order
 
 ```bash
-graphite-cli ls-targets <dashboard-name>
+graphite ls-targets <dashboard-name>
 ```
 
 ### mv
@@ -112,7 +112,15 @@ graphite-cli ls-targets <dashboard-name>
 Moves a dashboard from source to target
 
 ```bash
-graphite-cli mv <source-dashboard-name> <target-dashboard-name>
+graphite mv <source-dashboard-name> <target-dashboard-name>
+```
+
+### repl
+
+Starts an interactive dashboard repl. A `client` object is provided in global scope for you to interact with as soon as the repl is started.
+
+```bash
+graphite repl
 ```
 
 ### rm
@@ -120,7 +128,7 @@ graphite-cli mv <source-dashboard-name> <target-dashboard-name>
 Removes a dashboard
 
 ```bash
-graphite-cli rm <dashboard-name>
+graphite rm <dashboard-name>
 ```
 
 ### save-dump
@@ -128,7 +136,7 @@ graphite-cli rm <dashboard-name>
 Saves a dashboard dump (see `dump`) back to the dashboard of the same name. This is a destructive override. Be careful. The dashboard dump file extension is optional.
 
 ```bash
-graphite-cli save-dump <dashboard-dump-filename>
+graphite save-dump <dashboard-dump-filename>
 ```
 
 ### save-graphs
@@ -136,7 +144,7 @@ graphite-cli save-dump <dashboard-dump-filename>
 Saves a graph dump (see `dump-graphs`) back to the dashboard of the same name. This is a destructive override. Be careful. The graph dump file extension is optional.
 
 ```bash
-graphite-cli save-graphs <graphs-dump-filename>
+graphite save-graphs <graphs-dump-filename>
 ```
 
 ### touch
@@ -144,5 +152,5 @@ graphite-cli save-graphs <graphs-dump-filename>
 Creates a new, blank dashboard with the specified name.
 
 ```bash
-graphite-cli touch <dashboard-name>
+graphite touch <dashboard-name>
 ```

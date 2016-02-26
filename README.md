@@ -15,6 +15,13 @@ graphite-cli is a set of node.js command line tools created to make working with
 * `save-graphs` - Saves graphs dump back to dashboard
 * `touch` - Creates a new, empty dashboard 
 
+## Installation
+
+```bash
+npm install -g graphite-cli # Install from repository
+npm install -g git+https://github.com/jwolski/graphite-cli # install from gitlab
+```
+
 ## Usage
 
 graphite-cli uses the `GRAPHITE_CLI_URL` environment variable as the basis for all commands that require requests to be made against the Graphite web server. This must be set in your environment before execution.
